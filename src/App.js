@@ -9,7 +9,8 @@ class App extends React.Component {
     this.state = {
       status: 'X',
       label: 'Next player: X',
-      grid: new Array(9).fill(null)
+      grid: new Array(9).fill(null),
+      isGameEnded: false
     };
   }
 
@@ -18,6 +19,7 @@ class App extends React.Component {
       status: 'X',
       label: 'Next player: X',
       grid: new Array(9).fill(null),
+      isGameEnded: false
     });
   }
 
@@ -29,12 +31,13 @@ class App extends React.Component {
       const newStatus = (status === 'X') ? 'O' : 'X';
       const newGrid = grid;
       newGrid[index] = status;
-      const newLabel = this.getGameStatus(newGrid);
+      const { newLabel, isGameEnded } = this.getGameStatus(newGrid);
 
       this.setState({
         status: newStatus,
         grid: newGrid,
-        label: newLabel
+        label: newLabel,
+        isGameEnded
       });
     }
   }
@@ -42,6 +45,7 @@ class App extends React.Component {
   getGameStatus = (grid) => {
     const { status } = this.state;
     let newLabel;
+    let isGameEnded = true;
 
     if (this.isWinner()) {
       newLabel = `Winner: ${status}`;
@@ -49,13 +53,33 @@ class App extends React.Component {
       newLabel = 'Tie';
     } else {
       newLabel = `Next player: ${status === 'X' ? 'O' : 'X'}`;
+      isGameEnded = false;
     }
 
-    return newLabel;
+    return { newLabel, isGameEnded };
+  }
+
+  isWinner = () => {
+    const { status, grid } = this.state;
+
+    if ((grid[0] === status && grid[4] === status && grid[8] === status ) ||
+        (grid[2] === status && grid[4] === status && grid[6] === status ) ) {
+          return true;
+    }
+
+    for (let i = 0; i < 3; i++) {
+      const hor = i * 3;
+      if ((grid[0+hor] === status && grid[1+hor] === status && grid[2+hor] === status) ||
+          (grid[0+i] === status && grid[3+i] === status && grid[6+i] === status) ) {
+            return true;
+      }
+    }
+
+    return false;
   }
 
   render() {
-    const { grid, label } = this.state;
+    const { grid, label, isGameEnded } = this.state;
 
     return (
       <div className="app">
@@ -65,6 +89,7 @@ class App extends React.Component {
               key={i}
               index={i}
               value={value}
+              disabled={isGameEnded}
               handleClick={this.handleClick}
             />
           ))}
