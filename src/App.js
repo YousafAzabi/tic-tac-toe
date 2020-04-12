@@ -22,7 +22,21 @@ class App extends React.Component {
   }
 
   handleClick = (e) => {
+    const { label, status, grid } = this.state;
+    const index = e.target.getAttribute('index');
 
+    if (!e.target.innerText) {
+      const newStatus = (status === 'X') ? 'O' : 'X';
+      const newGrid = grid;
+      newGrid[index] = status;
+      //const newLabel = this.getGameStatus(newGrid);
+
+      this.setState({
+        status: newStatus,
+        grid: newGrid,
+        //label: newLabel
+      });
+    }
   }
 
   getGameStatus = () => {
