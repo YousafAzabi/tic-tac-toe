@@ -9,7 +9,7 @@ class App extends React.Component {
     this.state = {
       status: 'X',
       label: 'Next player: X',
-      grid: new Array(9).fill(null),
+      grid: new Array(9).fill(null)
     };
   }
 
@@ -29,18 +29,29 @@ class App extends React.Component {
       const newStatus = (status === 'X') ? 'O' : 'X';
       const newGrid = grid;
       newGrid[index] = status;
-      //const newLabel = this.getGameStatus(newGrid);
+      const newLabel = this.getGameStatus(newGrid);
 
       this.setState({
         status: newStatus,
         grid: newGrid,
-        //label: newLabel
+        label: newLabel
       });
     }
   }
 
-  getGameStatus = () => {
+  getGameStatus = (grid) => {
+    const { status } = this.state;
+    let newLabel;
 
+    if (this.isWinner()) {
+      newLabel = `Winner: ${status}`;
+    } else if(grid.indexOf(null) === -1) {
+      newLabel = 'Tie';
+    } else {
+      newLabel = `Next player: ${status === 'X' ? 'O' : 'X'}`;
+    }
+
+    return newLabel;
   }
 
   render() {
